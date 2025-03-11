@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}首页 - Sake的博客{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        {% for post in post_list %}
+        <article class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title">
+                    <a href="{% url 'posts:detail' post.pk %}" class="text-dark text-decoration-none">
+                        {{ post.title }}
+                    </a>
+                </h2>
+                <p class="card-text text-muted">
+                    <small>
+                        作者：{{ post.author }} | 
+                        分类：<a href="{% url 'posts:category' post.category.pk %}" class="text-muted">{{ post.category.name }}</a> | 
+                        发布时间：{{ post.created_time|date:"Y-m-d" }} | 
+                        阅读：{{ post.views }}
+                    </small>
+                </p>
+                <p class="card-text">{{ post.excerpt|default:post.content|truncatechars:200 }}</p>
+                <a href="{% url 'posts:detail' post.pk %}" class="btn btn-primary">阅读全文</a>
+            </div>
+        </article>
+        {% empty %}
+        <div class="text-center py-5">
+            <h3>暂无文章！</h3>
+        </div>
+        {% endfor %}
+
+        {% if is_paginated %}
+        <nav aria-label="分页导航">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">上一页</a>
+                </li>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">下一页</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                分类
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    {% for category in category_list %}
+                    <li>
+                        <a href="{% url 'posts:category' category.pk %}" class="text-decoration-none">
+                            {{ category.name }}
+                        </a>
+                    </li>
+                    {% empty %}
+                    <li>暂无分类！</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

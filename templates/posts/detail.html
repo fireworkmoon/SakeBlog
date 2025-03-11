@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }} - Sake的博客{% endblock %}
+
+{% block content %}
+<article class="card">
+    <div class="card-body">
+        <h1 class="card-title">{{ post.title }}</h1>
+        <p class="card-text text-muted">
+            <small>
+                作者：{{ post.author }} | 
+                分类：<a href="{% url 'posts:category' post.category.pk %}" class="text-muted">{{ post.category.name }}</a> | 
+                发布时间：{{ post.created_time|date:"Y-m-d H:i:s" }} | 
+                阅读：{{ post.views }}
+            </small>
+        </p>
+        <hr>
+        <div class="card-text">
+            {{ post.content|linebreaks }}
+        </div>
+    </div>
+</article>
+{% endblock %} 
